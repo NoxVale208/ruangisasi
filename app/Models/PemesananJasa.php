@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PemesananJasa extends Model
 {
@@ -23,6 +24,7 @@ class PemesananJasa extends Model
         'diputuskan_oleh',
         'diputuskan_pada',
         'tim_id',
+        'ditugaskan_pada',
         'catatan_admin',
     ];
 
@@ -33,6 +35,7 @@ class PemesananJasa extends Model
             'tanggal_selesai' => 'date',
             'budget' => 'integer',
             'diputuskan_pada' => 'datetime',
+            'ditugaskan_pada' => 'datetime',
         ];
     }
 
@@ -54,5 +57,11 @@ class PemesananJasa extends Model
     public function diputuskanOleh(): BelongsTo
     {
         return $this->belongsTo(User::class, 'diputuskan_oleh');
+    }
+
+    public function riwayatStatus(): HasMany
+    {
+        return $this->hasMany(StatusPemesanan::class, 'pemesanan_jasa_id')
+            ->orderBy('diubah_pada');
     }
 }

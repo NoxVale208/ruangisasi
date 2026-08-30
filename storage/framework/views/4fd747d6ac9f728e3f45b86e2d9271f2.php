@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Super Admin - Ruangisasi'); ?>
 
-@section('title', 'Super Admin - Ruangisasi')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="mb-4">
     <h2 class="fw-bold mb-1">Persetujuan Pemesanan</h2>
     <p class="text-muted mb-0">
@@ -21,7 +19,7 @@
             </div>
 
             <span class="badge text-bg-warning">
-                {{ $pemesanan->where('status_persetujuan', 'menunggu')->count() }} Menunggu
+                <?php echo e($pemesanan->where('status_persetujuan', 'menunggu')->count()); ?> Menunggu
             </span>
         </div>
 
@@ -38,38 +36,43 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($pemesanan as $item)
+                    <?php $__empty_1 = true; $__currentLoopData = $pemesanan; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
                             <td>
-                                <strong>{{ $item->user?->name ?? '-' }}</strong>
+                                <strong><?php echo e($item->user?->name ?? '-'); ?></strong>
                                 <div class="small text-muted">
-                                    {{ $item->user?->email ?? '-' }}
+                                    <?php echo e($item->user?->email ?? '-'); ?>
+
                                 </div>
                             </td>
 
                             <td>
-                                <strong>{{ $item->jasa?->nama ?? $item->nama_jasa }}</strong>
+                                <strong><?php echo e($item->jasa?->nama ?? $item->nama_jasa); ?></strong>
                                 <div class="small text-muted">
-                                    {{ $item->alamat }}
+                                    <?php echo e($item->alamat); ?>
+
                                 </div>
                             </td>
 
                             <td>
-                                {{ $item->tanggal_mulai?->format('d/m/Y') ?? '-' }}
+                                <?php echo e($item->tanggal_mulai?->format('d/m/Y') ?? '-'); ?>
+
                                 -
-                                {{ $item->tanggal_selesai?->format('d/m/Y') ?? '-' }}
+                                <?php echo e($item->tanggal_selesai?->format('d/m/Y') ?? '-'); ?>
+
                             </td>
 
                             <td class="fw-semibold">
-                                Rp {{ number_format($item->budget, 0, ',', '.') }}
+                                Rp <?php echo e(number_format($item->budget, 0, ',', '.')); ?>
+
                             </td>
 
                             <td style="min-width: 240px;">
-                                @if($item->status_persetujuan === 'menunggu')
+                                <?php if($item->status_persetujuan === 'menunggu'): ?>
                                     <div class="d-flex gap-1">
-                                        <form method="POST" action="{{ route('superadmin.pemesanan.approve', $item) }}">
-                                            @csrf
-                                            @method('PATCH')
+                                        <form method="POST" action="<?php echo e(route('superadmin.pemesanan.approve', $item)); ?>">
+                                            <?php echo csrf_field(); ?>
+                                            <?php echo method_field('PATCH'); ?>
                                             <input type="hidden" name="keputusan" value="setuju">
                                             <button type="submit" class="btn btn-sm btn-success">
                                                 Setuju
@@ -80,31 +83,34 @@
                                             type="button"
                                             class="btn btn-sm btn-outline-danger"
                                             data-bs-toggle="modal"
-                                            data-bs-target="#tolakSuperModal{{ $item->id }}"
+                                            data-bs-target="#tolakSuperModal<?php echo e($item->id); ?>"
                                         >
                                             Tolak
                                         </button>
                                     </div>
-                                @elseif($item->status_persetujuan === 'setuju')
+                                <?php elseif($item->status_persetujuan === 'setuju'): ?>
                                     <span class="badge text-bg-success">Disetujui</span>
                                     <div class="small text-muted mt-1">
-                                        Oleh: {{ $item->diputuskanOleh?->name ?? '-' }}
+                                        Oleh: <?php echo e($item->diputuskanOleh?->name ?? '-'); ?>
+
                                     </div>
-                                @else
+                                <?php else: ?>
                                     <span class="badge text-bg-danger">Ditolak</span>
                                     <div class="small text-muted mt-1">
-                                        Oleh: {{ $item->diputuskanOleh?->name ?? '-' }}
+                                        Oleh: <?php echo e($item->diputuskanOleh?->name ?? '-'); ?>
+
                                     </div>
-                                    @if($item->catatan_admin)
+                                    <?php if($item->catatan_admin): ?>
                                         <div class="small mt-1">
-                                            <strong>Alasan:</strong> {{ $item->catatan_admin }}
+                                            <strong>Alasan:</strong> <?php echo e($item->catatan_admin); ?>
+
                                         </div>
-                                    @endif
-                                @endif
+                                    <?php endif; ?>
+                                <?php endif; ?>
                             </td>
 
                             <td>
-                                @php
+                                <?php
                                     $statusLabel = [
                                         'menunggu' => 'Menunggu',
                                         'menunggu_tim' => 'Menunggu Tim',
@@ -113,40 +119,45 @@
                                         'selesai' => 'Selesai',
                                         'ditolak' => 'Ditolak',
                                     ];
-                                @endphp
+                                ?>
 
                                 <span class="badge
-                                    {{ $item->status_proses === 'selesai' ? 'text-bg-success' : '' }}
-                                    {{ $item->status_proses === 'ditolak' ? 'text-bg-danger' : '' }}
-                                    {{ in_array($item->status_proses, ['pengerjaan', 'perbaikan']) ? 'text-bg-primary' : '' }}
-                                    {{ in_array($item->status_proses, ['menunggu', 'menunggu_tim']) ? 'text-bg-secondary' : '' }}
+                                    <?php echo e($item->status_proses === 'selesai' ? 'text-bg-success' : ''); ?>
+
+                                    <?php echo e($item->status_proses === 'ditolak' ? 'text-bg-danger' : ''); ?>
+
+                                    <?php echo e(in_array($item->status_proses, ['pengerjaan', 'perbaikan']) ? 'text-bg-primary' : ''); ?>
+
+                                    <?php echo e(in_array($item->status_proses, ['menunggu', 'menunggu_tim']) ? 'text-bg-secondary' : ''); ?>
+
                                 ">
-                                    {{ $statusLabel[$item->status_proses] ?? ucfirst($item->status_proses) }}
+                                    <?php echo e($statusLabel[$item->status_proses] ?? ucfirst($item->status_proses)); ?>
+
                                 </span>
                             </td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="6" class="text-center text-muted py-5">
                                 Belum ada pemesanan.
                             </td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-{{-- Modal alasan penolakan --}}
-@foreach($pemesanan as $item)
-    @if($item->status_persetujuan === 'menunggu')
-        <div class="modal fade" id="tolakSuperModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+
+<?php $__currentLoopData = $pemesanan; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+    <?php if($item->status_persetujuan === 'menunggu'): ?>
+        <div class="modal fade" id="tolakSuperModal<?php echo e($item->id); ?>" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form method="POST" action="{{ route('superadmin.pemesanan.approve', $item) }}">
-                        @csrf
-                        @method('PATCH')
+                    <form method="POST" action="<?php echo e(route('superadmin.pemesanan.approve', $item)); ?>">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('PATCH'); ?>
 
                         <input type="hidden" name="keputusan" value="tidak_setuju">
 
@@ -157,7 +168,7 @@
 
                         <div class="modal-body">
                             <p>
-                                Pesanan <strong>{{ $item->jasa?->nama ?? $item->nama_jasa }}</strong>
+                                Pesanan <strong><?php echo e($item->jasa?->nama ?? $item->nama_jasa); ?></strong>
                                 akan ditolak.
                             </p>
 
@@ -190,6 +201,8 @@
                 </div>
             </div>
         </div>
-    @endif
-@endforeach
-@endsection
+    <?php endif; ?>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\go_event12\resources\views/superadmin/dashboard.blade.php ENDPATH**/ ?>

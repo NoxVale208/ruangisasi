@@ -27,4 +27,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(PemesananJasa::class);
     }
+
+    public function statusPemesanan()
+    {
+        return $this->hasMany(StatusPemesanan::class, 'diubah_oleh');
+    }
 }
